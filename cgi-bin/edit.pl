@@ -32,3 +32,36 @@ sub consulta{
   $sth->finish;
   return $text;
 }
+sub renderForm{
+  my $title = $_[0];
+  my $text = $_[1];
+  my $body = <<FORM;
+    <h1>$title</h1>
+    <form action = "new.pl">
+      <input type="text" name=title value="$title" style="display:none">
+      <label for = "text">Texto</label>
+      <textarea name="text" rows="25" cols="50">$text</textarea><br>
+      <input type="submit" value="Enviar">
+    </form>
+    <a href = "edit.pl?title=$title">Cancelar</a>
+FORM
+  return $body;
+}
+sub printHTML{
+ my $css = $_[0];
+ my $body = $_[1];
+ print <<BLOCK;
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <title></title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="$css">
+  </head>
+  <body>
+$body
+  </body>
+</html>
+BLOCK
+
+}
