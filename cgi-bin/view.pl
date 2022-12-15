@@ -78,3 +78,52 @@ my @types = (
     tag => 'p'
   }
  );
+ 
+ my $body = translate(@types,$text);
+printHTML($title,$body);
+
+sub translate{
+  my $str=pop(@_);
+  my @types = @_;
+
+  foreach my $type (@types){
+    my $tag = $type->{tag};
+    my $regex = $type->{regex};
+
+    if($tag eq 'a'){
+        $str =~ s/$regex/<p><$tag href="$2">$1<\/$tag><\/p>/gm;
+    }
+    else{
+        $str =~ s/$regex/<$tag>$1<\/$tag>/gm;
+    }
+  }
+  return $str;
+}
+sub printHTML{
+  my $title=$_[0];
+  my $body=$_[1];
+  print <<HTML;
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8">
+    <title>$title</title>
+  </head>
+  <body>
+    $body
+  </body>
+</html>
+HTML
+}
+sub consulta{
+  my $condicion = $_[0];
+  my $variable1 =$_[1];
+  my $sth = $dbh->prepare($condicion);
+  $sth->execute($variable1);
+  my $text;
+  while(my @row = $sth->fetchrow_array){
+    $text = $row[0];
+  }
+  $sth->finish;
+  return $text;
+}
