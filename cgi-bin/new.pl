@@ -11,6 +11,21 @@ my $dbh = DBI->connect($dsn, $user, $password) or die("No se pudo conectar!");
 
 my $stm = "SELECT Title FROM Articles WHERE Title=?";
 
+if (defined(select_title($stm,$title))){
+  $stm = "UPDATE Articles SET Text=? WHERE Title=?";
+  consulta($stm,$text,$title);
+}
+else{
+  $stm = "INSERT INTO Articles (Title,Text) VALUES (?,?)";
+  consulta($stm,$title,$text);
+}
+$dbh->disconnect;
+
+my $h1 = "<h1>$title</h1>";
+my $pre = "<pre>$text</pre>";
+my $body = $h1."\n".$pre; 
+printHTML("../css/style.css",$body);
+
 sub select_title{
   my $condicion = $_[0];
   my $variable1 =$_[1];
